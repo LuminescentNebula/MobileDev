@@ -20,31 +20,31 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG,"onStart");
+        Log.d(TAG,"onStart");
         Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
     }
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(TAG,"onStop");
+        Log.e(TAG,"onStop");
         Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(TAG,"onDestroy");
+        Log.v(TAG,"onDestroy");
         Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
     }
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG,"onPause");
+        Log.w(TAG,"onPause");
         Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG,"onResume");
+        Log.wtf(TAG,"onResume");
         Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 }
