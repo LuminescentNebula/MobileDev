@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MobileDev</string>
+    <string name="input">Поле для ввода текста</string>
+    <string name="btn">Кнопка с текстом</string>
+    <string name="field">Поле с текстом</string>
+    <string name="nbtn">Новый текст</string>
 </resources>
