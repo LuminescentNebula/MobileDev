@@ -1,6 +1,12 @@
 package com.mirea.mobiledev;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,70 +17,47 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-
-    public void onButtonClick(View view)
-    {
-        Log.i(TAG, "Clicked!");
-    }
-
+public class MainActivity extends FragmentActivity {
 
     private final String TAG = "onTag";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.constraint_layout);
-        Log.i(TAG,"onCreate");
+        setContentView(R.layout.main_activity);
 
-        TextView v= findViewById(R.id.textView2);
-        v.setText("Установленный текст");
-        ImageView imageView = findViewById(R.id.imageView);
-        imageView.setBackgroundResource(R.drawable.raven);
-        Button button = findViewById(R.id.button2);
-        button.setText(R.string.nbtn);
+        if (savedInstanceState == null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("some_int", 1);
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view,
+                            FirstFragment.class, bundle)
+                    .commit();
+        }
 
-        View.OnClickListener onClickListener=new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "Clicked!");
-                Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
-                intent.putExtra(SecondActivity.TEXT, "Передалось!");
-                startActivity(intent);
-            }
-        };
-        button.setOnClickListener(onClickListener);
+        getSupportFragmentManager().setFragmentResultListener("fromFirst", this, (requestKey, bundle) -> {
+            Integer result = bundle.getInt("some_int", 0);
+            Log.i(TAG, String.valueOf(result));
+            Log.i(TAG, getSupportFragmentManager().getFragments().toString());
+            getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view,
+                            SecondFragment.class, bundle)
+                    .commit();
 
-        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
-    }
+        });
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG,"onStart");
-        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.e(TAG,"onStop");
-        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v(TAG,"onDestroy");
-        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.w(TAG,"onPause");
-        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.wtf(TAG,"onResume");
-        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+        getSupportFragmentManager().setFragmentResultListener("fromSecond", this, (requestKey, bundle) -> {
+            Integer result = bundle.getInt("some_int", 0);
+            Log.i(TAG, String.valueOf(result));
+            Log.i(TAG, getSupportFragmentManager().getFragments().toString());
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_container_view,
+                            FirstFragment.class, bundle)
+                    .commit();
+        });
     }
 }
