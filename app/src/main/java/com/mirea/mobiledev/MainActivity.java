@@ -1,21 +1,8 @@
 package com.mirea.mobiledev;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class MainActivity extends FragmentActivity {
 
@@ -27,37 +14,41 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.main_activity);
 
         if (savedInstanceState == null) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("some_int", 1);
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view,
-                            FirstFragment.class, bundle)
-                    .commit();
-        }
-
-        getSupportFragmentManager().setFragmentResultListener("fromFirst", this, (requestKey, bundle) -> {
-            Integer result = bundle.getInt("some_int", 0);
-            Log.i(TAG, String.valueOf(result));
-            Log.i(TAG, getSupportFragmentManager().getFragments().toString());
-            getSupportFragmentManager().popBackStack();
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view,
-                            SecondFragment.class, bundle)
-                    .commit();
-
-        });
-
-        getSupportFragmentManager().setFragmentResultListener("fromSecond", this, (requestKey, bundle) -> {
-            Integer result = bundle.getInt("some_int", 0);
-            Log.i(TAG, String.valueOf(result));
-            Log.i(TAG, getSupportFragmentManager().getFragments().toString());
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.fragment_container_view,
-                            FirstFragment.class, bundle)
+                            MenuFragment.class, null)
                     .commit();
+        }
+
+        getSupportFragmentManager().setFragmentResultListener("to", this, (requestKey, bundle) -> {
+            if (bundle.getBoolean("switch")){
+                getSupportFragmentManager().beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.fragment_container_view,
+                                RecyclerFragment.class, bundle)
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.fragment_container_view,
+                                ListFragment.class, bundle)
+                        .commit();
+            }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getFragments().get(0).getId()==R.layout.menu){
+            super.onBackPressed();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view,
+                            MenuFragment.class, null)
+                    .commit();
+        }
     }
 }
