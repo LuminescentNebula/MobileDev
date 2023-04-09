@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 public class SecondFragment extends Fragment {
     private final String TAG = "FRAGMENT2";
@@ -29,13 +30,17 @@ public class SecondFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.constraint_layout, container, false);
-        Bundle bundle = this.getArguments();
 
-        Button myButton = view.findViewById(R.id.constraint_button);
-        myButton.setOnClickListener(v -> {
-            if (bundle != null) {
-                bundle.putInt("some_int", bundle.getInt("some_int", 0) + 1);
-                getParentFragmentManager().setFragmentResult("fromSecond", bundle);
+        view.findViewById(R.id.constraint_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                if (getArguments()!=null) {
+                    bundle.putInt("some_int", getArguments().getInt("some_int", 0) + 1);
+                } else {
+                    bundle.putInt("some_int",0);
+                }
+                Navigation.findNavController(view).navigate(R.id.action_second_to_third,bundle);
             }
         });
         return view;
@@ -53,34 +58,5 @@ public class SecondFragment extends Fragment {
             v.setText(String.valueOf(bundle.getInt("some_int",0)));
         }
     }
-
-    @Override
-    public void onResume() {
-        Log.v(TAG,"onResume");
-        Toast.makeText(getContext(), "onResume", Toast.LENGTH_SHORT).show();
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        Log.v(TAG,"onPause");
-        Toast.makeText(getContext(), "onPause", Toast.LENGTH_SHORT).show();
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        Log.v(TAG,"onStop");
-        Toast.makeText(getContext(), "onStop", Toast.LENGTH_SHORT).show();
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.v(TAG,"onDestroy");
-        Toast.makeText(getContext(), "onDestroy", Toast.LENGTH_SHORT).show();
-        super.onDestroy();
-    }
-
 }
 

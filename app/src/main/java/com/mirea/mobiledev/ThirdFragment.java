@@ -6,21 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
 
-public class FirstFragment extends Fragment {
+public class ThirdFragment extends Fragment {
     private final String TAG = "FRAGMENT1";
     View view;
-    public FirstFragment(){
+    public ThirdFragment(){
     }
 
     @Override
@@ -33,8 +29,9 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        view= inflater.inflate(R.layout.linear_layout, container, false);
-        view.findViewById(R.id.linear_button).setOnClickListener(new View.OnClickListener() {
+        view= inflater.inflate(R.layout.relative_layout, container, false);
+
+        view.findViewById(R.id.relative_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
@@ -43,11 +40,11 @@ public class FirstFragment extends Fragment {
                 } else {
                     bundle.putInt("some_int",0);
                 }
-                Navigation.findNavController(view).navigate(R.id.action_first_to_second,bundle);
+                Navigation.findNavController(view).navigate(R.id.action_third_to_first,bundle);
             }
         });
-
         return view;
+
     }
 
     @Override
@@ -58,11 +55,9 @@ public class FirstFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            TextView v = view.findViewById(R.id.linear_text);
+            TextView v = view.findViewById(R.id.relative_text);
             v.setText(String.valueOf(bundle.getInt("some_int",0)));
         }
-
-
     }
 }
 
