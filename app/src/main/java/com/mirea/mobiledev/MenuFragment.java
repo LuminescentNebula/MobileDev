@@ -34,6 +34,10 @@ public class MenuFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.notification).setOnClickListener(v -> {
+
+        });
+
         return view;
 
     }
