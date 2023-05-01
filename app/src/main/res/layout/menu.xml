@@ -4,44 +4,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <EditText
+        android:id="@+id/field"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:maxLines="3"
+        app:layout_constraintBottom_toTopOf="@+id/text_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_line"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:maxLines="3"
+        app:layout_constraintBottom_toTopOf="@id/app_specific"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field"/>
+
     <Button
-        android:id="@+id/list"
-        android:text="ListView"
+        android:id="@+id/app_specific"
+        android:text="App-Specific"
+        android:textAllCaps="false"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/recycler"
+        app:layout_constraintBottom_toTopOf="@id/common"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/recycler"
-        android:text="RecyclerView"
+        android:id="@+id/common"
+        android:text="Общее"
+        android:textAllCaps="false"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/notification"
+        app:layout_constraintBottom_toTopOf="@id/shared"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/list" />
+        app:layout_constraintTop_toBottomOf="@id/app_specific" />
 
     <Button
-        android:id="@+id/notification"
-        android:text="Notification"
+        android:id="@+id/shared"
+        android:text="Shared Preferences"
+        android:textAllCaps="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/service"
+        app:layout_constraintBottom_toTopOf="@id/room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler" />
+        app:layout_constraintTop_toBottomOf="@id/common" />
 
     <Button
-        android:id="@+id/service"
-        android:text="Service"
+        android:id="@+id/room"
+        android:text="Room"
+        android:textAllCaps="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notification" />
+        app:layout_constraintTop_toBottomOf="@id/shared" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
