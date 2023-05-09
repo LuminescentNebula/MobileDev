@@ -3,10 +3,12 @@ package com.mirea.mobiledev;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +30,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class MenuFragment extends Fragment {
     View view;
@@ -55,53 +60,49 @@ public class MenuFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.menu, container, false);
 
+        EditText editText = view.findViewById(R.id.field);
+        TextView textView = view.findViewById(R.id.text_line);
+
 
         view.findViewById(R.id.app_specific).setOnClickListener(v -> {
-            EditText editText = view.findViewById(R.id.field);
             writeFile(editText.getText().toString());
-            TextView textView = view.findViewById(R.id.text_line);
-            textView.setText(readFileSpecific());
+            textView.setText(readFile());
         });
 
         view.findViewById(R.id.common).setOnClickListener(v -> {
-            Log.i(TAG,"Clicked");
-
-            EditText editText = view.findViewById(R.id.field);
-            TextView textView = view.findViewById(R.id.text_line);
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.i(TAG,"Already");
-                writeFileCommon(editText.getText().toString());
-                textView.setText(readFileCommon());
-            } else {
-                Log.i(TAG, "Before request");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//                    requestPermissions(new String[]{
-//                            "android.permission.READ_EXTERNAL_STORAGE",
-//                            "android.permission.WRITE_EXTERNAL_STORAGE"}, code);
-
-//                ActivityCompat.requestPermissions(this,new String[]{
-//                        "android.permission.READ_EXTERNAL_STORAGE",
-//                        "android.permission.WRITE_EXTERNAL_STORAGE"},code);
-
-//                resultContracts.launch("android.permission.READ_EXTERNAL_STORAGE");
-               resultContracts.launch("android.permission.WRITE_EXTERNAL_STORAGE");
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()){
+    //            if (ActivityCompat.checkSelfPermission(getContext(),
+    //                    Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    //                    == PackageManager.PERMISSION_GRANTED
+    //            ) {
+                    Log.i(TAG,"Already");
                     writeFileCommon(editText.getText().toString());
                     textView.setText(readFileCommon());
-
-                    Log.i(TAG, "After request");
+                } else {
+                    Log.i(TAG, "Not requested");
                 }
             }
         });
 
         view.findViewById(R.id.shared).setOnClickListener(v -> {
-
+            SharedPreferences sharedPref =
+                    getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("shared", editText.getText().toString());
+            editor.apply();
+            textView.setText(sharedPref.getString("shared","0"));
         });
 
         view.findViewById(R.id.room).setOnClickListener(v -> {
-
+            Runnable runnable = () -> {
+                AppDatabase db = Room.databaseBuilder(getContext().getApplicationContext(),
+                        AppDatabase.class, "database-name").allowMainThreadQueries().build();
+                Dao dao = db.dao();
+                dao.insertAll(new Data(1,editText.getText().toString()));
+                textView.setText(dao.getAll().get(0).getLine());
+            };
+            new Handler().postDelayed(runnable, 1);
         });
         return view;
     }
@@ -111,7 +112,8 @@ public class MenuFragment extends Fragment {
     void writeFile(String text) {
         try {
             BufferedWriter bw = new BufferedWriter(
-                    new OutputStreamWriter(getContext().openFileOutput("myfile", Context.MODE_PRIVATE)));
+                    new OutputStreamWriter(getContext()
+                            .openFileOutput("myfile", Context.MODE_PRIVATE)));
             bw.write(text);
             bw.close();
             Log.d("FILE", "Файл записан");
@@ -120,7 +122,7 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    String readFileSpecific() {
+    String readFile() {
         StringBuilder output = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(
@@ -137,7 +139,6 @@ public class MenuFragment extends Fragment {
 
     void writeFileCommon(String text) {
         File file = new File(Environment.getExternalStorageDirectory(), "example");
-
         try {
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
@@ -147,23 +148,18 @@ public class MenuFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
     String readFileCommon() {
         File file = new File(Environment.getExternalStorageDirectory(), "example");
         StringBuilder text = new StringBuilder();
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-
             while ((line = br.readLine()) != null) {
                 text.append(line);
             }
             br.close();
         } catch (IOException e) {
-            // You'll need to add proper error handling here
         }
         return text.toString();
     }

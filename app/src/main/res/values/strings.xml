@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">MobileDev</string>
-    <string name="input">Поле для ввода текста</string>
-    <string name="btn">Кнопка с текстом</string>
-    <string name="field">Поле с текстом</string>
-    <string name="nbtn">Новый текст</string>
+    <string name="app_name" translatable="false">MobileDev</string>
+    <string name="input" translatable="false">Поле для ввода текста</string>
+    <string name="btn" translatable="false">Кнопка с текстом</string>
+    <string name="field" translatable="false">Поле с текстом</string>
+    <string name="nbtn" translatable="false">Новый текст</string>
+    <string name="preference_key" translatable="false">preference key</string>
 </resources>
