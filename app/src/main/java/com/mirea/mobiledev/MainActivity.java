@@ -1,11 +1,17 @@
 package com.mirea.mobiledev;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "onTag";
 
@@ -14,38 +20,27 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        if (savedInstanceState == null) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("some_int", 1);
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view,
-                            FirstFragment.class, bundle)
-                    .commit();
+        Button button = findViewById(R.id.button);
+        TextView textView = findViewById(R.id.text);
+        EditText editText = findViewById(R.id.edit);
+
+        Intent intent = getIntent();
+        String type = intent.getType();
+
+        if ("text/plain".equals(type)) {
+           String receivedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            Log.d("TAG",receivedText);
+            textView.setText(receivedText);
         }
 
-        getSupportFragmentManager().setFragmentResultListener("fromFirst", this, (requestKey, bundle) -> {
-            Integer result = bundle.getInt("some_int", 0);
-            Log.i(TAG, String.valueOf(result));
-            Log.i(TAG, getSupportFragmentManager().getFragments().toString());
-            getSupportFragmentManager().popBackStack();
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view,
-                            SecondFragment.class, bundle)
-                    .commit();
+        button.setOnClickListener(v -> {
+            String shareText = String.valueOf(editText.getText());
 
-        });
-
-        getSupportFragmentManager().setFragmentResultListener("fromSecond", this, (requestKey, bundle) -> {
-            Integer result = bundle.getInt("some_int", 0);
-            Log.i(TAG, String.valueOf(result));
-            Log.i(TAG, getSupportFragmentManager().getFragments().toString());
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.fragment_container_view,
-                            FirstFragment.class, bundle)
-                    .commit();
+            Intent sharingIntent = new Intent();
+            sharingIntent.setType(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            startActivity(Intent.createChooser(sharingIntent, "Поделиться с помощью"));
         });
     }
 }
