@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +36,9 @@ public class FirstFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.linear_layout, container, false);
+
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse);
+        view.findViewById(R.id.imageView).startAnimation(animation);
         view.findViewById(R.id.linear_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

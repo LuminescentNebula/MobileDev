@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,8 @@ public class SecondFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.constraint_layout, container, false);
 
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse);
+        view.findViewById(R.id.imageView).startAnimation(animation);
         view.findViewById(R.id.constraint_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
